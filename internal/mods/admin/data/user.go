@@ -1,0 +1,125 @@
+package data
+
+import (
+	"context"
+	"github.com/peckfly/gopeck/internal/mods/admin/biz"
+	"github.com/peckfly/gopeck/internal/pkg/common"
+	"github.com/peckfly/gopeck/internal/pkg/errors"
+	"gorm.io/gorm"
+)
+
+type userRepository struct {
+	*gorm.DB
+}
+
+func NewUserRepository(db *gorm.DB) biz.UserRepository {
+	return &userRepository{db}
+}
+
+func GetUserDB(ctx context.Context, defDB *gorm.DB) *gorm.DB {
+	return common.GetDB(ctx, defDB).Model(new(biz.User))
+}
+
+// Query users from the database based on the provided parameters and options.
+func (a *userRepository) Query(ctx context.Context, params biz.UserQueryParam, opts ...biz.UserQueryOptions) (*biz.UserQueryResult, error) {
+	var opt biz.UserQueryOptions
+	if len(opts) > 0 {
+		opt = opts[0]
+	}
+
+	db := GetUserDB(ctx, a.DB)
+	if v := params.LikeUsername; len(v) > 0 {
+		db = db.Where("username LIKE ?", "%"+v+"%")
+	}
+	if v := params.LikeName; len(v) > 0 {
+		db = db.Where("name LIKE ?", "%"+v+"%")
+	}
+	if v := params.Status; len(v) > 0 {
+		db = db.Where("status = ?", v)
+	}
+
+	var list biz.Users
+	pageResult, err := common.WrapPageQuery(ctx, db, params.PaginationParam, opt.QueryOptions, &list)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	queryResult := &biz.UserQueryResult{
+		PageResult: pageResult,
+		Data:       list,
+	}
+	return queryResult, nil
+}
+
+// Get the specified user from the database.
+func (a *userRepository) Get(ctx context.Context, id string, opts ...biz.UserQueryOptions) (*biz.User, error) {
+	var opt biz.UserQueryOptions
+	if len(opts) > 0 {
+		opt = opts[0]
+	}
+
+	item := new(biz.User)
+	ok, err := common.FindOne(ctx, GetUserDB(ctx, a.DB).Where("id=?", id), opt.QueryOptions, item)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	} else if !ok {
+		return nil, nil
+	}
+	return item, nil
+}
+
+func (a *userRepository) GetByUsername(ctx context.Context, username string, opts ...biz.UserQueryOptions) (*biz.User, error) {
+	var opt biz.UserQueryOptions
+	if len(opts) > 0 {
+		opt = opts[0]
+	}
+
+	item := new(biz.User)
+	ok, err := common.FindOne(ctx, GetUserDB(ctx, a.DB).Where("username=?", username), opt.QueryOptions, item)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	} else if !ok {
+		return nil, nil
+	}
+	return item, nil
+}
+
+// Exists Exist checks if the specified user exists in the database.
+func (a *userRepository) Exists(ctx context.Context, id string) (bool, error) {
+	ok, err := common.Exists(ctx, GetUserDB(ctx, a.DB).Where("id=?", id))
+	return ok, errors.WithStack(err)
+}
+
+func (a *userRepository) ExistsUsername(ctx context.Context, username string) (bool, error) {
+	ok, err := common.Exists(ctx, GetUserDB(ctx, a.DB).Where("username=?", username))
+	return ok, errors.WithStack(err)
+}
+
+// Create a new user.
+func (a *userRepository) Create(ctx context.Context, item *biz.User) error {
+	result := GetUserDB(ctx, a.DB).Create(item)
+	return errors.WithStack(result.Error)
+}
+
+// Update the specified user in the database.
+func (a *userRepository) Update(ctx context.Context, item *biz.User, selectFields ...string) error {
+	db := GetUserDB(ctx, a.DB).Where("id=?", item.ID)
+	if len(selectFields) > 0 {
+		db = db.Select(selectFields)
+	} else {
+		db = db.Select("*").Omit("created_at")
+	}
+	result := db.Updates(item)
+	return errors.WithStack(result.Error)
+}
+
+// Delete the specified user from the database.
+func (a *userRepository) Delete(ctx context.Context, id string) error {
+	result := GetUserDB(ctx, a.DB).Where("id=?", id).Delete(new(biz.User))
+	return errors.WithStack(result.Error)
+}
+
+func (a *userRepository) UpdatePasswordByID(ctx context.Context, id string, password string) error {
+	result := GetUserDB(ctx, a.DB).Where("id=?", id).Select("password").Updates(biz.User{Password: password})
+	return errors.WithStack(result.Error)
+}

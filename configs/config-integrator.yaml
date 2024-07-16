@@ -1,0 +1,38 @@
+name: gopeck-integrator
+log:
+  mode: console # console or file
+#  file:
+#    enable: true
+#    path: ./logs/integrator
+#    max_size: 100
+#    max_backups: 30
+#    max_age: 7
+server:
+  grpc:
+    addr: 8082
+data:
+  database:
+    dsn: root:happy123@tcp(${DB_ADDR})/gopeck?parseTime=True&loc=Local&timeout=5s
+  redis:
+    type: 0 # 0: redis client mode 1: redis cluster mode
+    addr: ${REDIS_ADDR}
+    password: happy123
+    db: 0
+    dial_timeout: 3000
+    read_timeout: 3000
+    write_timeout: 3000
+    min_idle_conns: 50
+    max_idle_conns: 80
+    max_active_conns: 500
+  etcd:
+    endpoints: ${ETCD_ADDR}
+    username: root
+    password: happy123
+  clickhouse:
+    addrs: ${CLICKHOUSE_ADDR}
+    username: clickhouse
+    password: happy123
+    database: gopeck
+    max_open_conns: 200
+    max_idle_conns: 50
+    stress_reporter_table_name: gopeck.stress_log

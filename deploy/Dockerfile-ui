@@ -1,0 +1,20 @@
+FROM node:16 as build-stage
+
+WORKDIR /app
+
+COPY ../web/gopeck-web/package*.json ./
+
+RUN npm install
+
+COPY ../web/gopeck-web/ ./
+
+RUN npm run build:prod
+
+FROM nginx:stable-alpine as production-stage
+
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+COPY ../web/gopeck-web/nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 9211
+
+CMD ["nginx", "-g", "daemon off;"]

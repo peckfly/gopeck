@@ -1,0 +1,2036 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "id": 10,
+      "interval": "1s",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n\nsum(total_num) as total\n\nFROM\n  $table\nWHERE\n  $timeFilter\n  AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n  AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n sum(arrayJoin(mapValues(error_map))) AS count\n\nFROM\n  gopeck.stress_log\nWHERE\n  timestamp >= 1719555168 AND timestamp <= 1719555348\n  AND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\n  AND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))\nGROUP BY\n  error_type\nORDER BY\n  error_type",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "总请求数",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "id": 18,
+      "interval": "1s",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  total / (maxTimestamp - minTimestamp) AS rps\nFROM (\n    SELECT\n      min(timestamp) AS minTimestamp,\n      max(timestamp) AS maxTimestamp,\n      sum(total_num) AS total\n    FROM\n      $table\n    WHERE\n      $timeFilter\n      AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n      AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\n)\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n  total / (maxTimestamp - minTimestamp + 1) AS rps\nFROM (\n    SELECT\n      min(timestamp) AS minTimestamp,\n      max(timestamp) AS maxTimestamp,\n      sum(total_num) AS total\n    FROM\n      gopeck.stress_log\n    WHERE\n      timestamp >= 1719672187 AND timestamp <= 1719672427\n      AND (length('26180924756492434') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('26180924756492434', '')))))\n      AND (length('131998181511692434') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('131998181511692434', '')))))\n)",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "RPS",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "id": 16,
+      "interval": "1s",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  sum(arrayJoin(mapValues(error_map))) - sum(arrayJoin(mapValues(error_map)) * (arrayJoin(mapKeys(error_map)) = '')) AS error_count\nFROM\n  $table\nWHERE\n  $timeFilter\n  AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n  AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n\nsum(total_num) as total\n\nFROM\n  gopeck.stress_log\nWHERE\n  timestamp >= 1719555168 AND timestamp <= 1719555348\n  AND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\n  AND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "错误数",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0.01
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "id": 15,
+      "interval": "1s",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  (sum(arrayJoin(mapValues(error_map))) - sum(arrayJoin(mapValues(error_map)) * (arrayJoin(mapKeys(error_map)) = ''))) / sum(total_num) * 100 AS error_rate\nFROM\n  $table\nWHERE\n  $timeFilter\n  AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n  AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n\nsum(total_num) as total\n\nFROM\n  gopeck.stress_log\nWHERE\n  timestamp >= 1719555168 AND timestamp <= 1719555348\n  AND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\n  AND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "错误率",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 4
+      },
+      "id": 19,
+      "interval": "1s",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n    toInt64(\n        sum(key * value) / sum(value)\n    ) AS avg_duration\nFROM (\n    SELECT\n        arrayJoin(arrayZip(mapKeys(duration_map), mapValues(duration_map))) AS kv_pair,\n        kv_pair.1 AS key,\n        kv_pair.2 AS value\n    FROM\n        $table\n    WHERE\n        $timeFilter\n        AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n        AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\n)\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n  toInt64(sum(k * v) / sum(v)) AS avg_duration\nFROM\n(\n  SELECT\n    arrayJoin(mapKeys(duration_map)) AS k,\n    arrayJoin(mapValues(duration_map)) AS v\n  FROM\n    gopeck.stress_log\n  WHERE\n    timestamp >= 1719555228 AND timestamp <= 1719555230\n    AND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', ''))))\n    AND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', ''))))\n)",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "平均耗时(ms)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 4
+      },
+      "id": 14,
+      "interval": "1s",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  min(arrayJoin(mapKeys(duration_map))) AS min_duration\nFROM\n  $table\nWHERE\n  $timeFilter\n  AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n  AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n\nsum(total_num) as total\n\nFROM\n  gopeck.stress_log\nWHERE\n  timestamp >= 1719555168 AND timestamp <= 1719555348\n  AND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\n  AND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "最小耗时(ms)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 4
+      },
+      "id": 13,
+      "interval": "1s",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  max(arrayJoin(mapKeys(duration_map))) AS max_duration\nFROM\n  $table\nWHERE\n  $timeFilter\n  AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n  AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n\nsum(total_num) as total\n\nFROM\n  gopeck.stress_log\nWHERE\n  timestamp >= 1719555168 AND timestamp <= 1719555348\n  AND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\n  AND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "最大耗时(ms)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 12,
+        "y": 4
+      },
+      "id": 25,
+      "interval": "1s",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  quantile(0.90)(\n    arrayJoin(merged_values)\n  ) AS p75_duration\nFROM (\n    SELECT\n      arrayFlatten(groupArray(value)) AS merged_values\n    FROM (\n        SELECT\n          arrayJoin(arrayMap(kv -> arrayMap(x -> toInt64(kv.1), range(toInt32(kv.2))), arrayZip(mapKeys(duration_map), mapValues(duration_map)))) AS value\n        FROM\n          $table\n        WHERE\n          $timeFilter\n          AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n          AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\n    )\n)\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n  quantile(0.90)(\n    arrayJoin(merged_values)\n  ) AS p75_duration\nFROM (\n    SELECT\n      arrayFlatten(groupArray(value)) AS merged_values\n    FROM (\n        SELECT\n          arrayJoin(arrayMap(kv -> arrayMap(x -> toInt64(kv.1), range(toInt32(kv.2))), arrayZip(mapKeys(duration_map), mapValues(duration_map)))) AS value\n        FROM\n          gopeck.stress_log\n        WHERE\n          timestamp >= 1719555168 AND timestamp <= 1719555348\n          AND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\n          AND (length('131801857348632722') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('131801857348632722', '')))))\n    )\n)",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "90线耗时(ms)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 15,
+        "y": 4
+      },
+      "id": 21,
+      "interval": "1s",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  quantile(0.95)(\n    arrayJoin(merged_values)\n  ) AS p75_duration\nFROM (\n    SELECT\n      arrayFlatten(groupArray(value)) AS merged_values\n    FROM (\n        SELECT\n          arrayJoin(arrayMap(kv -> arrayMap(x -> toInt64(kv.1), range(toInt32(kv.2))), arrayZip(mapKeys(duration_map), mapValues(duration_map)))) AS value\n        FROM\n          $table\n        WHERE\n          $timeFilter\n          AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n          AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\n    )\n)\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n  toInt64(quantileExactWeighted(0.95)(\n    arrayJoin(arrayMap(x -> x.1, arrayZip(mapKeys(duration_map), mapValues(duration_map)))),\n    arrayJoin(arrayMap(x -> toUInt64(x.2), arrayZip(mapKeys(duration_map), mapValues(duration_map))))\n  )) AS p99_duration\nFROM\n  gopeck.stress_log\nWHERE\n  timestamp >= 1719555229 AND timestamp <= 1719555231\n  AND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\n  AND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "95线耗时(ms)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 18,
+        "y": 4
+      },
+      "id": 22,
+      "interval": "1s",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  quantile(0.99)(\n    arrayJoin(merged_values)\n  ) AS p75_duration\nFROM (\n    SELECT\n      arrayFlatten(groupArray(value)) AS merged_values\n    FROM (\n        SELECT\n          arrayJoin(arrayMap(kv -> arrayMap(x -> toInt64(kv.1), range(toInt32(kv.2))), arrayZip(mapKeys(duration_map), mapValues(duration_map)))) AS value\n        FROM\n          $table\n        WHERE\n          $timeFilter\n          AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n          AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\n    )\n)\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n  toInt64(quantileExactWeighted(0.99)(\n    arrayJoin(arrayMap(x -> x.1, arrayZip(mapKeys(duration_map), mapValues(duration_map)))),\n    arrayJoin(arrayMap(x -> toUInt64(x.2), arrayZip(mapKeys(duration_map), mapValues(duration_map))))\n  )) AS p99_duration\nFROM\n  gopeck.stress_log\nWHERE\n  timestamp >= 1719555168 AND timestamp <= 1719555348\n  AND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\n  AND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "99线耗时(ms)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 21,
+        "y": 4
+      },
+      "id": 26,
+      "interval": "1s",
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "table",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  quantile(0.999)(\n    arrayJoin(merged_values)\n  ) AS p75_duration\nFROM (\n    SELECT\n      arrayFlatten(groupArray(value)) AS merged_values\n    FROM (\n        SELECT\n          arrayJoin(arrayMap(kv -> arrayMap(x -> toInt64(kv.1), range(toInt32(kv.2))), arrayZip(mapKeys(duration_map), mapValues(duration_map)))) AS value\n        FROM\n          $table\n        WHERE\n          $timeFilter\n          AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n          AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\n    )\n)\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n  toInt64(quantileExactWeighted(0.999)(\n    arrayJoin(mapKeys(duration_map)),\n    arrayJoin(CAST(mapValues(duration_map) AS Array(UInt64)))\n  )) AS p99_duration\nFROM\n  gopeck.stress_log\nWHERE\n  timestamp >= 1719555229 AND timestamp <= 1719555231\n  AND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\n  AND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "999线耗时(ms)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 0,
+        "y": 8
+      },
+      "id": 8,
+      "interval": "1s",
+      "options": {
+        "displayLabels": [],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n \n  sum(arrayJoin(mapValues(status_map))) AS count,\n   arrayJoin(mapKeys(status_map)) AS status_code\nFROM\n  $table\nWHERE\n  $timeFilter\n  AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n  AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\nGROUP BY\n  status_code\n\nORDER BY status_code\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n  arrayJoin(mapKeys(status_map)) AS status_code,\n  sum(arrayJoin(mapValues(status_map))) AS count\nFROM\n  gopeck.stress_log\nWHERE\n  timestamp >= 1719555168 AND timestamp <= 1719555348\n  AND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\n  AND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))\nGROUP BY\n  status_code",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "HTTP状态码",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 8,
+        "y": 8
+      },
+      "id": 12,
+      "interval": "1s",
+      "options": {
+        "displayLabels": [],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n sum(arrayJoin(mapValues(error_map))) AS count,\n  arrayJoin(arrayMap(k -> if(k = '', 'success', k), mapKeys(error_map))) AS error_type\n\nFROM\n  $table\nWHERE\n  $timeFilter\n  AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n  AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\nGROUP BY\n  error_type\nORDER BY\n  error_type\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n \n  sum(arrayJoin(mapValues(status_map))) AS count,\n   arrayJoin(mapKeys(status_map)) AS status_code\nFROM\n  gopeck.stress_log\nWHERE\n  timestamp >= 1719555168 AND timestamp <= 1719555348\n  AND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\n  AND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))\nGROUP BY\n  status_code\n\nORDER BY status_code",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "错误分布",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 8
+      },
+      "id": 27,
+      "interval": "1s",
+      "options": {
+        "displayLabels": [],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n sum(arrayJoin(mapValues(body_check_result_map))) AS count,\n  arrayJoin(arrayMap(k -> if(k = '', 'default', k), mapKeys(body_check_result_map))) AS check_code\n\nFROM\n  $table\nWHERE\n  $timeFilter\n  AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n  AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\nGROUP BY\n  check_code\nORDER BY\n  check_code\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n \n  sum(arrayJoin(mapValues(body_check_result_map))) AS count,\n   arrayJoin(mapKeys(body_check_result_map)) AS check_code\nFROM\n  gopeck.stress_log\nWHERE\n  timestamp >= 1719717370 AND timestamp <= 1719717610\n  AND (length('26256729805161188') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('26256729805161188', '')))))\n  AND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))\nGROUP BY\n  check_code\n\nORDER BY check_code",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "结果校验分布",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 1,
+      "interval": "1s",
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT $timeSeries as t, path(url) as url, sum(total_num) \nFROM $table \nWHERE $timeFilter \nAND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\nAND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\nGROUP BY t, url \nORDER BY t\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT (intDiv(timestamp, 1) * 1) * 1000 as t, path(url) as url, sum(total_num) \nFROM gopeck.stress_log \nWHERE timestamp >= 1717854725 AND timestamp <= 1717854965 \nAND plan_id IN (23131729250222820)\nAND task_id IN ()\nGROUP BY t, url \nORDER BY t",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "压测QPS",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "id": 6,
+      "interval": "1s",
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  $timeSeries AS t,\n  path(url) AS url,\n  sum(arrayReduce('sum', arrayMap((k, v) -> if(k = 200, v, 0), mapKeys(status_map), mapValues(status_map)))) / sum(arrayReduce('sum', mapValues(status_map))) AS success_rate\nFROM\n  $table\nWHERE\n  $timeFilter\n  AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n  AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\nGROUP BY\n  t, url\nORDER BY\n  t\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT (intDiv(timestamp, 1) * 1) * 1000 as t, path(url) as url, sum(total_num) \nFROM gopeck.stress_log \nWHERE timestamp >= 1719555168 AND timestamp <= 1719555348 \nAND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\nAND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))\nGROUP BY t, url \nORDER BY t",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "成功率",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 37
+      },
+      "id": 2,
+      "interval": "1s",
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  $timeSeries AS t,\n  path(url) AS url,\n  arrayJoin(mapKeys(status_map)) AS status_code,\n  sum(arrayJoin(mapValues(status_map))) AS count\nFROM\n  $table\nWHERE\n  $timeFilter\n  AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n  AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\nGROUP BY\n  t, url, status_code\nORDER BY\n  t\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n  (intDiv(timestamp, 1) * 1) * 1000 AS t,\n  path(url) AS url,\n  arrayJoin(mapKeys(status_map)) AS status_code,\n  sum(arrayJoin(mapValues(status_map))) AS count\nFROM\n  gopeck.stress_log\nWHERE\n  timestamp >= 1719555168 AND timestamp <= 1719555348\n  AND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\n  AND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))\nGROUP BY\n  t, url, status_code\nORDER BY\n  t",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "HTTP状态码",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 48
+      },
+      "id": 7,
+      "interval": "1s",
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  $timeSeries as t,\n  path(url) as url,\n  sum(arraySum(arrayMap( (k, v) -> k * v, mapKeys(duration_map), \n                mapValues(duration_map)))) / sum(arraySum(mapValues(duration_map))) as avg_duration\nFROM\n  $table\nWHERE\n  $timeFilter\n  AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n  AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\nGROUP BY\n  t, url\nORDER BY\n  t\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT (intDiv(timestamp, 1) * 1) * 1000 as t, path(url) as url, sum(total_num) \nFROM gopeck.stress_log \nWHERE timestamp >= 1719555168 AND timestamp <= 1719555348 \nAND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\nAND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))\nGROUP BY t, url \nORDER BY t",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "接口平均耗时",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 59
+      },
+      "id": 9,
+      "interval": "1s",
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  t,\n  path(url) as url,\n  quantile(0.99)(\n    arrayJoin(merged_values)\n  ) as p99_duration\nFROM (\n    SELECT\n      t ,\n      url,\n      arrayFlatten(groupArray(value)) AS merged_values\n    FROM (\n        SELECT\n          $timeSeries as t,\n          path(url) as url,\n          arrayJoin(arrayMap(kv -> arrayMap(x -> toInt64(kv.1), range(toInt32(kv.2))), arrayZip(mapKeys(duration_map), mapValues(duration_map)))) AS value\n        FROM\n          $table\n        WHERE\n          $timeFilter\n          AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n          AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\n    )\n    GROUP BY t, url\n)\nGROUP BY t, url\nORDER BY t\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n  (intDiv(timestamp, 1) * 1) * 1000 as t,\n  path(url) as url,\n  quantile(0.99)(\n    arrayJoin(merged_values)\n  ) as p99_duration\nFROM (\n    SELECT\n      t,\n      url,\n      arrayFlatten(groupArray(value)) AS merged_values\n    FROM (\n        SELECT\n          (intDiv(timestamp, 1) * 1) * 1000 as t,\n          path(url) as url,\n          arrayJoin(arrayMap(kv -> arrayMap(x -> toInt64(kv.1), range(toInt32(kv.2))), arrayZip(mapKeys(duration_map), mapValues(duration_map)))) AS value\n        FROM\n          gopeck.stress_log\n        WHERE\n          timestamp >= 1719672187 AND timestamp <= 1719672427\n          AND (length('26180924756492434') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('26180924756492434', '')))))\n          AND (length('131998181511692434') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('131998181511692434', '')))))\n    )\n    GROUP BY t, url\n)\nGROUP BY t, url\nORDER BY t",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "99线耗时",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 70
+      },
+      "id": 5,
+      "interval": "1s",
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  t,\n  path(url) as url,\n  quantile(0.999)(\n    arrayJoin(merged_values)\n  ) as p999_duration\nFROM (\n    SELECT\n      t ,\n      url,\n      arrayFlatten(groupArray(value)) AS merged_values\n    FROM (\n        SELECT\n          $timeSeries as t,\n          path(url) as url,\n          arrayJoin(arrayMap(kv -> arrayMap(x -> toInt64(kv.1), range(toInt32(kv.2))), arrayZip(mapKeys(duration_map), mapValues(duration_map)))) AS value\n        FROM\n          $table\n        WHERE\n          $timeFilter\n          AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n          AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\n    )\n    GROUP BY t, url\n)\nGROUP BY t, url\nORDER BY t\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n  (intDiv(timestamp, 1) * 1) * 1000 as t,\n  path(url) as url,\n  quantileExactWeighted(0.999)(\n    arrayJoin(mapKeys(duration_map)),\n    arrayJoin(arrayMap(x -> toUInt64(x), mapValues(duration_map)))\n  ) as p999_duration\nFROM\n  gopeck.stress_log\nWHERE\n  timestamp >= 1719672187 AND timestamp <= 1719672427\n  AND (length('26180924756492434') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('26180924756492434', '')))))\n  AND (length('131998181511692434') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('131998181511692434', '')))))\nGROUP BY\n  t, url\nORDER BY\n  t",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "999线耗时",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "fdm2ci8tdxywwf"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 81
+      },
+      "id": 3,
+      "interval": "1s",
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "add_metadata": true,
+          "database": "gopeck",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "fdm2ci8tdxywwf"
+          },
+          "dateTimeColDataType": "timestamp",
+          "dateTimeType": {
+            "label": "TimeStamp",
+            "value": "TIMESTAMP"
+          },
+          "editorMode": "builder",
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "interval": "",
+          "intervalFactor": 1,
+          "query": "SELECT\n  $timeSeries as t,\n  path(url) as url,\n  max(arrayJoin(mapKeys(duration_map))) as max_duration\nFROM\n  $table\nWHERE\n  $timeFilter\n  AND (length('$planId') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$planId', '')))))\n  AND (length('$taskId') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('$taskId', '')))))\nGROUP BY\n  t, url\nORDER BY\n  t\n",
+          "rawQuery": "/* grafana dashboard=GoPeck, user=1 */\nSELECT\n  (intDiv(timestamp, 1) * 1) * 1000 as t,\n  path(url) as url,\n  sum(arraySum(arrayMap( (k, v) -> k * v, mapKeys(duration_map), \n                mapValues(duration_map)))) / sum(arraySum(mapValues(duration_map))) as avg_duration\nFROM\n  gopeck.stress_log\nWHERE\n  timestamp >= 1719555168 AND timestamp <= 1719555348\n  AND (length('25984600593432722') = 0 OR arrayExists(x -> (x = plan_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('25984600593432722', '')))))\n  AND (length('') = 0 OR arrayExists(x -> (x = task_id), arrayMap(x -> toInt64(x), splitByChar(',', coalesce('', '')))))\nGROUP BY\n  t, url\nORDER BY\n  t",
+          "refId": "A",
+          "round": "0s",
+          "showFormattedSQL": true,
+          "skip_comments": true,
+          "table": "stress_log"
+        }
+      ],
+      "title": "最大耗时",
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "25984600593432722",
+          "value": "25984600593432722"
+        },
+        "hide": 0,
+        "label": "压测ID",
+        "name": "planId",
+        "options": [
+          {
+            "selected": true,
+            "text": "23131729250222820",
+            "value": "23131729250222820"
+          }
+        ],
+        "query": "25984600593432722",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "hide": 0,
+        "label": "接口ID",
+        "name": "taskId",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "2024-06-30T03:48:28.000Z",
+    "to": "2024-06-30T03:52:28.000Z"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "GoPeck",
+  "uid": "bdm2z89fvy39cf",
+  "version": 85,
+  "weekStart": ""
+}

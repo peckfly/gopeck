@@ -1,0 +1,96 @@
+export default {
+    'stress.planName': '压测名称',
+    'stress.time': '压测时长',
+    'stress.stressTimePlaceholder': '请输入压测时长，单位分钟',
+    'stress.stressType': '压测模式',
+    'stress.stressMode': '施压模式',
+    'stress.rpsMode': 'RPS模式(Request Per Second)',
+    'stress.rpsModeRecord': 'RPS模式',
+    'stress.currencyMode': '并发模式',
+    'stress.normalMode': '恒定模式',
+    'stress.stepMode': '步长模式',
+    'stress.stepIntervalTime': '增长间隔',
+    'stress.stepIntervalTimePlaceholder': '请输入步长增长时间间隔，单位分钟',
+    'stress.task.taskName': '接口名称',
+    'stress.task.rps': 'QPS',
+    'stress.task.concurrencyNum': '并发数',
+    'stress.task.startRps': '起始QPS',
+    'stress.task.startConcurrencyNum': '起始并发数',
+    'stress.task.maxRps': '最大QPS',
+    'stress.task.maxConcurrencyNum': '最大并发数',
+    'stress.task.stepRps': 'QPS递增步长',
+    'stress.task.stepConcurrencyNum': '并发数递增步长',
+    'stress.task.url': '接口URL地址',
+    'stress.task.dynamicParamScript': '动态参数脚本',
+    'stress.task.responseCheckScript': '结果断言脚本',
+
+    'stress.task.otherOptions': '其他配置',
+    'stress.task.disableCompression': '禁用压缩',
+    'stress.task.disableKeepAlive': '禁用长连接',
+    'stress.task.disableRedirect': '禁用重定向',
+    'stress.task.enableHttp2': '启用HTTP2',
+    'stress.task.addRequest': '添加API',
+    'stress.task.startStress': '开始压测',
+    'stress.task.requestTimeout': '接口超时时间',
+    'stress.requestTimeoutPlaceholder': '单位秒，默认5秒',
+    'stress.task.requestTitle': '接口',
+    'stress.task.maxConnections': '最大连接数',
+
+    'stress.task.YES': '是',
+    'stress.task.NO': '否',
+
+    'stress.task.time_histogram': '耗时直方图',
+
+    'stress.task.http_code_distribution': 'HTTP状态码分布',
+
+    'stress.task.time_cost_statistics': '耗时统计',
+
+    'stress.task.error_distribution': '错误分布',
+
+    'stress.task.result_check_distribution': '结果断言分布',
+
+    'stress.task.histogram.YAxisName': '数量',
+    'stress.task.histogram.XAxisName': '耗时(ms)',
+
+    'stress.task.resetParameters': '重置参数',
+
+    'stress.task.noError': '无错误',
+    'stress.task.noData': '无数据',
+
+    'stress.task.tabBaseParam': '基础参数',
+
+    'stress.start.success': '发起压测成功',
+    'stress.start.failed': '发起压测失败',
+
+    view_monitoring: '查看监控',
+    update_quota: '修改配额',
+    goroutine_num: 'goroutine_num',
+    cpu_usage: 'CPU 使用率',
+    memory_usage: '内存使用率',
+    loadavg_1_min: 'loadavg_1_min',
+    loadavg_5_min: 'loadavg_5_min',
+    loadavg_15_min: 'loadavg_15_min',
+    machine_address: '机器地址',
+    rps_quota: 'RPS 配额',
+    goroutine_quota: 'Goroutine 配额',
+
+    rps_cost: 'RPS消耗',
+    rps_percentage: 'RPS利用率',
+    goroutine_cost: 'Goroutine消耗',
+    goroutine_percentage: 'Goroutine利用率',
+    running_task_count: '运行中任务数',
+    'button.action': '操作',
+
+    'error.get_node_list_failed': '获取机器列表失败',
+    machine_monitoring: '机器监控',
+
+    'stress.nodeDetail.cpuUsage': 'CPU使用率',
+    'stress.nodeDetail.memUsage': '内存使用率',
+    'stress.nodeDetail.load1': 'loadavg_1_min',
+    'stress.nodeDetail.load5': 'loadavg_5_min',
+    'stress.nodeDetail.load15': 'loadavg_15_min',
+    'stress.nodeDetail.goroutineNum': 'goroutine_num',
+    'stress.nodeDetail.time': '时间',
+    'stress.nodeDetail.quotaUpdateSuccess': '配额修改成功',
+    'stress.nodeDetail.quotaUpdateFailed': '配额修改失败',
+}

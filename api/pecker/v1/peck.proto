@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package pecker;
+
+option go_package = "api/pecker/v1;v1";
+
+service PeckService {
+  rpc peck(PeckRequest) returns (PeckReply);
+  rpc stop(StopRequest) returns (StopReply);
+}
+
+message PeckRequest {
+  uint64 planId = 1;
+  uint64 taskId = 2;
+  int32 stressType = 3;
+  int32 stressMode = 35;
+  int32 num = 4;
+  int32 stepIntervalTime = 32;
+  repeated int32 nums = 33;
+  string addr = 34;
+  int32 maxConnections = 6;
+  int32 maxIdleConnections = 7;
+  int32 stressTime = 8;
+  int32 timeout = 9;
+  string url = 10;
+  string method = 11;
+  map<string, string> headers = 12;
+  string query = 13;
+  string body = 14;
+  repeated DynamicParam dynamicParams = 15;
+  string responseCheckScript = 16;
+  bool disableKeepAlive = 17;
+  bool h2 = 18;
+  int32 maxBodySize = 19;
+  bool disableCompression = 20;
+  bool disableRedirects = 21;
+  string proxy = 22;
+}
+
+message DynamicParam {
+  map<string, string> headers = 1;
+  map<string, string> query = 2;
+  string body = 3;
+}
+
+message PeckReply {
+  int32 code = 1;
+}
+
+message StopRequest {
+  uint64 planId = 1;
+  uint64 taskId = 2;
+}
+
+message StopReply {
+  int32 code = 1;
+}

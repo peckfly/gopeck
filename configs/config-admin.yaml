@@ -1,0 +1,64 @@
+name: gopeck-admin
+log:
+  mode: console # console or file
+#  file:
+#    enable: true
+#    path: ./logs/admin
+#    max_size: 100
+#    max_backups: 30
+#    max_age: 7
+server:
+  http:
+    jwt_sign_key: testSignKey
+    port: 8081
+data:
+  database:
+    dsn: root:happy123@tcp(${DB_ADDR})/gopeck?parseTime=True&loc=Local&timeout=5s
+  redis:
+    type: 0 # 0: redis client mode 1: redis cluster mode
+    addr: ${REDIS_ADDR}
+    password: happy123
+    db: 0
+    dial_timeout: 3000
+    read_timeout: 3000
+    write_timeout: 3000
+    min_idle_conns: 50
+    max_idle_conns: 80
+    max_active_conns: 500
+  etcd:
+    endpoints: ${ETCD_ADDR}
+    username: root
+    password: happy123
+rbac:
+  root_username: admin
+  root_name: Admin
+  root_password: 6351623c8cef86fefabfa7da046fc619
+  root_id: root
+  user_cache_exp: 4 # hour
+  deny_delete_menu: false
+  default_login_pwd: 6351623c8cef86fefabfa7da046fc619
+  auth_skipped_path_prefixes: 2
+  auth_disable: false
+casbin:
+  disable: false
+  skipped_path_prefixes:
+    - /api/v1/captcha/
+    - /api/v1/login
+    - /api/v1/current/
+  load_thread: 2
+  auto_load_interval: 3
+  model_file: rbac_model.conf
+  work_dir: configs
+  gen_policy_file: gen_rbac_policy.csv
+auth:
+  disable: false
+  skipped_path_prefixes:
+    - /api/v1/captcha/
+    - /api/v1/login
+  signing_method: HS512
+  signing_key: XnEsT0S@
+  expired: 86400
+metrics:
+  grafana_addr: http://localhost:3000/d/bdm2z89fvy39cf/gopeck
+stress_config:
+  default_max_connections: 200

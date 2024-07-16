@@ -1,0 +1,68 @@
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+!**/Dockerfile*
+!**/Makefile
+!**/LICENSE
+
+# Unignore all dirs
+!*/
+!api
+node_modules
+
+**/node_modules/
+
+# ignore
+**/.idea
+**/.vscode
+**/.DS_Store
+**/logs
+**/adhoc
+**/docker-data/
+**/coverage.txt
+
+# for test purpose
+go.work
+go.work.sum
+**/.log
+
+*.log
+# gitlab ci
+.cache
+.golangci.yml
+
+# vim auto backup file
+*~
+!OWNERS
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+
+**/node_modules
+*/node_modules
+dist
+dist-ssr
+*.local
+*/.vitepress/cache/**/*
+*/.vitepress/.temp/**
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

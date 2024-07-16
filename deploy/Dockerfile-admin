@@ -1,0 +1,33 @@
+FROM golang:1.21.12-alpine AS builder
+
+ARG MODULE=github.com/peckfly/gopeck
+ARG APP=gopeck-admin
+
+WORKDIR /build
+
+ENV GOOS linux
+ENV GOPROXY https://goproxy.cn,direct
+
+COPY ../go.mod .
+COPY ../go.sum .
+RUN go mod download
+COPY ../ .
+
+RUN go install github.com/google/wire/cmd/wire@latest
+
+RUN go generate ./...
+
+RUN go build -ldflags="-s -w" -o cmd/${APP} ${MODULE}/cmd/admin
+
+FROM alpine
+
+WORKDIR /app
+
+COPY --from=builder /build/cmd/${APP} .
+COPY ../configs/config-admin.yaml ./configs/config-admin.yaml
+COPY ../configs/rbac_model.conf ./configs/rbac_model.conf
+
+EXPOSE 8081
+
+CMD ["sh", "-c", "./gopeck-admin -f ./configs/config-admin.yaml"]
+

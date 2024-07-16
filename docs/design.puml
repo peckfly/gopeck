@@ -1,0 +1,14 @@
+@startuml
+title: Gopeck
+
+actor user
+participant "gopeck-admin"
+participant "gopeck-integrator"
+participant "gopeck-pecker"
+database mysql
+database etcd
+database clickhouse
+queue redis
+collections grafana
+
+@enduml

@@ -1,0 +1,32 @@
+FROM golang:1.21.12-alpine AS builder
+
+ARG MODULE=github.com/peckfly/gopeck
+ARG APP=gopeck-integrator
+
+WORKDIR /build
+
+ENV GOOS linux
+ENV GOPROXY https://goproxy.cn,direct
+
+COPY ../go.mod .
+COPY ../go.sum .
+RUN go mod download
+COPY ../ .
+
+RUN go install github.com/google/wire/cmd/wire@latest
+
+RUN go generate ./...
+
+RUN go build -ldflags="-s -w" -o cmd/${APP} ${MODULE}/cmd/integrator
+
+FROM alpine
+
+WORKDIR /app
+
+COPY --from=builder /build/cmd/${APP} .
+COPY ../configs/config-integrator.yaml ./configs/config-integrator.yaml
+
+EXPOSE 8081
+
+CMD ["sh", "-c", "./gopeck-integrator -f ./configs/config-integrator.yaml"]
+

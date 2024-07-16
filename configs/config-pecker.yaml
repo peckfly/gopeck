@@ -1,0 +1,38 @@
+name: gopeck-pecker
+log:
+  mode: console # console or file
+#  file:
+#    enable: true
+#    path: ./logs/pecker
+#    max_size: 100
+#    max_backups: 30
+#    max_age: 7
+server:
+  grpc:
+    addr: 8083
+data:
+  redis:
+    type: 0 # 0: redis client mode 1: redis cluster mode
+    addr: ${REDIS_ADDR}
+    password: happy123
+    db: 0
+    dial_timeout: 3000
+    read_timeout: 3000
+    write_timeout: 3000
+    min_idle_conns: 50
+    max_idle_conns: 80
+    max_active_conns: 500
+  etcd:
+    endpoints: ${ETCD_ADDR}
+    username: root
+    password: happy123
+stress_config:
+  max_goroutine_num: 1000
+  max_rps_num: 500
+  max_result_chan_size: 1000000
+  rps_result_chan_blowup: 10
+  max_timeout_second: 5
+  report_goroutine_num: 2
+  default_max_connections: 200
+  error_cut_length: 100
+
